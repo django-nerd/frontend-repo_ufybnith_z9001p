@@ -33,15 +33,15 @@ const HeroSection = () => {
       onMouseLeave={handleMouseLeave}
       className="relative h-[72vh] min-h-[560px] w-full overflow-hidden bg-[#070814] text-white"
     >
-      {/* 3D Background */}
+      {/* 3D Background - Loading animation theme */}
       <div className="absolute inset-0">
         <Spline
-          scene="https://prod.spline.design/wwTRdG1D9CkNs368/scene.splinecode"
+          scene="https://prod.spline.design/igThmltzmqv5hkWo/scene.splinecode"
           style={{ width: '100%', height: '100%' }}
         />
       </div>
 
-      {/* Grainy gradient overlay for depth (no pointer capture) */}
+      {/* Gradient overlays must not block interaction */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
       <div className="pointer-events-none absolute inset-0 opacity-[0.15]" style={{
         backgroundImage:

@@ -20,6 +20,20 @@ const SectionCard = ({ title, icon: Icon, children }) => (
   </motion.div>
 );
 
+// Normalize API responses so UI never breaks on unexpected shapes
+function normalizeArray(value) {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+  if (typeof value === 'object') return Object.values(value);
+  return [];
+}
+
 const ProfileShowcase = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,9 +56,17 @@ const ProfileShowcase = () => {
     fetchProfile();
   }, []);
 
-  if (loading) return <div className="text-white/80">Loading profile…</div>;
-  if (error) return <div className="text-red-300">{error}</div>;
+  if (loading) return <div className="px-6 text-white/80">Loading profile…</div>;
+  if (error) return <div className="px-6 text-red-300">{error}</div>;
   if (!profile) return null;
+
+  const skills = normalizeArray(profile.skills);
+  const experience = normalizeArray(profile.experience).map((j) =>
+    typeof j === 'object' ? j : { role: String(j), company: '', period: '' }
+  );
+  const education = normalizeArray(profile.education).map((ed) =>
+    typeof ed === 'object' ? ed : { degree: String(ed), institution: '' }
+  );
 
   return (
     <section className="relative mx-auto -mt-20 max-w-6xl px-6">
@@ -69,9 +91,9 @@ const ProfileShowcase = () => {
             {profile.summary || 'Backend and ML engineer focused on reliable systems and delightful tooling.'}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
-            {(profile.skills || []).slice(0, 6).map((s, i) => (
+            {skills.slice(0, 6).map((s, i) => (
               <span key={i} className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-white/80">
-                {s}
+                {typeof s === 'string' ? s : JSON.stringify(s)}
               </span>
             ))}
           </div>
@@ -79,10 +101,14 @@ const ProfileShowcase = () => {
 
         <SectionCard title="Experience" icon={Briefcase}>
           <ul className="space-y-3 text-sm">
-            {(profile.experience || []).slice(0, 3).map((job, i) => (
+            {experience.slice(0, 3).map((job, i) => (
               <li key={i} className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">
-                <p className="font-medium text-white">{job.role} · {job.company}</p>
-                <p className="text-xs text-white/70">{job.period}</p>
+                <p className="font-medium text-white">
+                  {(job.role || 'Role')} {job.company ? '· ' + job.company : ''}
+                </p>
+                {(job.period || job.dateRange) && (
+                  <p className="text-xs text-white/70">{job.period || job.dateRange}</p>
+                )}
               </li>
             ))}
           </ul>
@@ -90,10 +116,12 @@ const ProfileShowcase = () => {
 
         <SectionCard title="Education" icon={GraduationCap}>
           <ul className="space-y-3 text-sm">
-            {(profile.education || []).map((ed, i) => (
+            {education.map((ed, i) => (
               <li key={i} className="rounded-lg bg-white/5 p-3 ring-1 ring-white/10">
-                <p className="font-medium text-white">{ed.degree}</p>
-                <p className="text-xs text-white/70">{ed.institution}</p>
+                <p className="font-medium text-white">{ed.degree || 'Education'}</p>
+                {(ed.institution || ed.school) && (
+                  <p className="text-xs text-white/70">{ed.institution || ed.school}</p>
+                )}
               </li>
             ))}
           </ul>

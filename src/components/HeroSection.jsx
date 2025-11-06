@@ -10,8 +10,8 @@ const HeroSection = () => {
   const y = useMotionValue(0);
   const xSpring = useSpring(x, { stiffness: 80, damping: 15, mass: 0.4 });
   const ySpring = useSpring(y, { stiffness: 80, damping: 15, mass: 0.4 });
-  const rotateX = useTransform(ySpring, [ -50, 50 ], [ 8, -8 ]);
-  const rotateY = useTransform(xSpring, [ -50, 50 ], [ -8, 8 ]);
+  const rotateX = useTransform(ySpring, [-50, 50], [8, -8]);
+  const rotateY = useTransform(xSpring, [-50, 50], [-8, 8]);
 
   const handleMouseMove = (e) => {
     const rect = containerRef.current?.getBoundingClientRect();
@@ -23,7 +23,8 @@ const HeroSection = () => {
   };
 
   const handleMouseLeave = () => {
-    x.set(0); y.set(0);
+    x.set(0);
+    y.set(0);
   };
 
   return (
@@ -33,27 +34,27 @@ const HeroSection = () => {
       onMouseLeave={handleMouseLeave}
       className="relative h-[72vh] min-h-[560px] w-full overflow-hidden bg-[#070814] text-white"
     >
-      {/* 3D Background - Loading animation theme */}
+      {/* 3D Background - Full-width cover background */}
       <div className="absolute inset-0">
         <Spline
-          scene="https://prod.spline.design/igThmltzmqv5hkWo/scene.splinecode"
+          scene="https://prod.spline.design/Qe6dlWJktclXcUBS/scene.splinecode"
           style={{ width: '100%', height: '100%' }}
         />
       </div>
 
       {/* Gradient overlays must not block interaction */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.15]" style={{
-        backgroundImage:
-          'radial-gradient(circle at 10% 10%, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0) 25%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 30%), radial-gradient(circle at 30% 80%, rgba(255,255,255,0.12) 0%, rgba(0,0,0,0) 28%)'
-      }} />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.15]"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 10% 10%, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0) 25%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 30%), radial-gradient(circle at 30% 80%, rgba(255,255,255,0.12) 0%, rgba(0,0,0,0) 28%)',
+        }}
+      />
 
       {/* Foreground content with parallax */}
       <div className="relative z-10 mx-auto flex h-full max-w-6xl items-center px-6">
-        <motion.div
-          style={{ rotateX, rotateY }}
-          className="w-full"
-        >
+        <motion.div style={{ rotateX, rotateY }} className="w-full">
           <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 backdrop-blur-md ring-1 ring-white/10">
             <Rocket className="h-4 w-4 text-fuchsia-400" />
             <span className="text-xs font-medium text-white/90">Backend & ML Engineering</span>
